@@ -8,7 +8,6 @@ import model.User;
 
 public class UserDao extends BasicDao {
 
-    @SuppressWarnings("CallToPrintStackTrace")
     public User save(User user) {
         String sql = "INSERT INTO User (cpf, email, fullName, username, password) VALUES (?, ?, ?, ?, ?);";
         try {
@@ -51,6 +50,33 @@ public class UserDao extends BasicDao {
             ex.printStackTrace();
         }
         return user;
+    }
+
+    public User update(User user) {
+        String sql = "update User set "
+                + " cpf = ?, "
+                + " email = ?, "
+                + " fullName = ?, "
+                + " username = ?, "
+                + " password = ? "
+                + " where id = ?; ";
+        try {
+            PreparedStatement stmt = this.con.prepareStatement(sql);
+            stmt.setString(1, user.getCpf());
+            stmt.setString(2, user.getEmail());
+            stmt.setString(3, user.getFullName());
+            stmt.setString(4, user.getUsername());
+            stmt.setString(5, user.getPassword());
+            stmt.setLong(6, user.getId());
+            int executeUpdate = stmt.executeUpdate();
+            if (executeUpdate == 1) {
+                return user;
+            }
+            return null;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return null;
+        }
     }
 
 }

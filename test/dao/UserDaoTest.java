@@ -29,17 +29,15 @@ public class UserDaoTest {
     public void tearDown() {
     }
 
-//    @Test
-//    public void testSave() {
-//        System.out.println("save");
-//        User user = null;
-//        UserDao instance = new UserDao();
-//        User expResult = null;
-//        User result = instance.save(user);
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
+    @Test
+    public void testSave() {
+        System.out.println("save");
+        User user = new User("11749803704", "eduardo@gmail.com", "Eduardo Lagoeiro", "eduardolagoeiro", "123456");
+        UserDao userDao = new UserDao();
+        User userSaved = userDao.save(user);
+        assertNotNull(userSaved);
+        assertNotNull(userSaved.getId());
+    }
 
     @Test
     public void testGetByUserId() {
@@ -50,7 +48,19 @@ public class UserDaoTest {
         Long id = userSaved.getId();
         User userResult = userDao.getByUserId(id);
         assertNotNull(userResult);
-        assertEquals(user.getCpf(), userResult.getCpf());
+        assertEquals(user, userResult);
+    }
+    
+    @Test
+    public void update() {
+        System.out.println("update");
+        User user = new User("11749803704", "eduardo@gmail.com", "Eduardo Lagoeiro", "eduardolagoeiro", "123456");
+        UserDao userDao = new UserDao();
+        User userSaved = userDao.save(user);
+        userSaved.setFullName("Abacate de Oliveira");
+        User userResult = userDao.update(userSaved);
+        assertNotNull(userResult);
+        assertEquals(user, userResult);
     }
     
 }
