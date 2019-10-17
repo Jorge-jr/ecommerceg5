@@ -4,8 +4,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import model.User;
 
 public class UserDao extends BasicDao {
@@ -22,7 +20,7 @@ public class UserDao extends BasicDao {
             prepareStatement.setString(5, user.getPassword());
             prepareStatement.executeUpdate();
             ResultSet resultSet = prepareStatement.getGeneratedKeys();
-            if(resultSet.next()){
+            if (resultSet.next()) {
                 Long id = resultSet.getLong(1);
                 user.setId(id);
             }
@@ -31,7 +29,28 @@ public class UserDao extends BasicDao {
             ex.printStackTrace();
             return null;
         }
-       
+    }
+
+    public User getByUserId(Long userId) {
+        String sql = "select * from User where id = ?;";
+        User user = null;
+        try {
+            PreparedStatement stmt = this.con.prepareStatement(sql);
+            stmt.setLong(1, userId);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                String cpf = rs.getString("cpf");
+                String email = rs.getString("email");
+                String fullName = rs.getString("fullName");
+                String username = rs.getString("username");
+                String password = rs.getString("password");
+                user = new User(cpf, email, fullName, username, password);
+                user.setId(rs.getLong("id"));
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return user;
     }
 
 }
