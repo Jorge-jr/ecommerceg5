@@ -79,4 +79,16 @@ public class UserDao extends BasicDao {
         }
     }
 
+    public int deleteByUserId(Long userId) {
+        String sql = "delete from User where id = ?;";
+        try {
+            PreparedStatement stmt = this.con.prepareStatement(sql);
+            stmt.setLong(1, userId);
+            return stmt.executeUpdate();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return 0;
+        }
+    }
+
 }
