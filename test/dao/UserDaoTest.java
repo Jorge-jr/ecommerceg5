@@ -1,33 +1,10 @@
 package dao;
 
 import model.User;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class UserDaoTest {
-
-    public UserDaoTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
 
     @Test
     public void testSave() {
@@ -60,7 +37,7 @@ public class UserDaoTest {
         userSaved.setFullName("Abacate de Oliveira");
         User userResult = userDao.update(userSaved);
         assertNotNull(userResult);
-        assertEquals(user, userResult);
+        assertEquals(userSaved, userResult);
     }
 
     @Test
