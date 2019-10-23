@@ -4,12 +4,21 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+
 import model.Product;
 
 public class ProductDao extends BasicDao {
+    
+    private ArrayList<Product> list = new ArrayList<>();
 
+    //em funcionamento apenas o save() e o deleteByProductId()
+    
+    
+    
+     //alterar os nos dos campos para o correspondente em sua tabela
     public Product save(Product product) {
-        String sql = "INSERT INTO Product (name, description, price, imageUrl) VALUES (?, ?, ?, ?);";
+        String sql = "INSERT INTO product (prod_name, prod_description, prod_price, prod_imageUrl) VALUES (?, ?, ?, ?);";
         try {
             PreparedStatement prepareStatement = this.con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             prepareStatement.setString(1, product.getName());
@@ -19,7 +28,7 @@ public class ProductDao extends BasicDao {
             prepareStatement.executeUpdate();
             ResultSet resultSet = prepareStatement.getGeneratedKeys();
             if (resultSet.next()) {
-                Long id = resultSet.getLong(1);
+                int id = resultSet.getInt(1);
                 product.setId(id);
             }
             return product;
@@ -42,7 +51,7 @@ public class ProductDao extends BasicDao {
                 Double price = rs.getDouble("price");
                 String imageUrl = rs.getString("imageUrl");
                 product = new Product(name, description, price, imageUrl);
-                product.setId(rs.getLong("id"));
+                product.setId(rs.getInt("id"));
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -75,16 +84,59 @@ public class ProductDao extends BasicDao {
         }
     }
 
-    public int deleteByProductId(Long productId) {
-        String sql = "delete from Product where id = ?;";
+    public int deleteByProductId(int productId) {
+        String sql = "DELETE FROM product WHERE prod_id = ?;";
         try {
             PreparedStatement stmt = this.con.prepareStatement(sql);
-            stmt.setLong(1, productId);
-            return stmt.executeUpdate();
+            stmt.setInt(1, productId);
+            int rowsHitted = stmt.executeUpdate(); // executa a query e retorna o numero de linhas afetadas
+            stmt.close();
+            return rowsHitted;
+            
         } catch (SQLException ex) {
             ex.printStackTrace();
             return 0;
         }
     }
-
+    
+    
+    //alterar os nos dos campos para o correspondente em sua tabela
+    public ArrayList<Product> listarTodos(){
+        String sql = "SELECT * FROM product ";
+        try {
+            Statement st = this.con.createStatement();
+            
+            ResultSet rs = st.executeQuery(sql);
+            while (rs.next()) {
+                int prod_id = rs.getInt("prod_id");
+                String name = rs.getString("prod_name");
+                String description = rs.getString("prod_description");
+                double price = rs.getDouble("prod_price");
+                String imageUrl = rs.getString("prod_imageUrl");
+                Product prod = new Product(name, description, price, imageUrl);
+                prod.setId(prod_id);
+                list.add(prod);
+            }
+        } catch (Exception erro) {
+             throw new RuntimeException("Erro para listar os produtos: "+ erro.getMessage());
+        }
+        return list;
+    }
+    
+    public int amountOfProducts(){
+        String sql = "SELECT COUNT(prod_id) FROM product";
+        try {
+            Statement st = this.con.createStatement();
+            ResultSet rs = st.executeQuery(sql);
+           
+            while(rs.next()){
+                return rs.getInt(1);
+                
+            }
+            
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao contabilizar a quantidade de produtos: "+ e.getMessage());
+        }
+       return 0;
+    }
 }
