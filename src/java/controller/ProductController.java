@@ -8,6 +8,7 @@ package controller;
 import dao.ProductDao;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.DecimalFormat;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -19,8 +20,10 @@ import model.Product;
  *
  * @author Celestino
  */
-@WebServlet(name = "ProductController", urlPatterns = {"/produto"})
+@WebServlet(name = "ProductController", urlPatterns = {"/produto/"})
 public class ProductController extends HttpServlet {
+
+    private int productId = 0;
     
     protected void processRequest(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException {
@@ -32,10 +35,21 @@ public class ProductController extends HttpServlet {
     private Product createProduct(HttpServletRequest req) {
         String name = req.getParameter("name");
         String description = req.getParameter("description");
-        Double price = Double.parseDouble(req.getParameter("price"));
+        double price = Double.parseDouble(req.getParameter("price"));
+        DecimalFormat fmt = new DecimalFormat("0.00");
+        String string = fmt.format(price);
+        String[] part = string.split("[,]");
+        String string2 = part[0]+"."+part[1];
+        price = Double.parseDouble(string2);
+        //price = Double.parseDouble(String.format(Locale.US, "%.2f", price));
+        
         String imgUrl = req.getParameter("imageUrl");
         
-        Product prod = new Product(name, description, price, imgUrl);
+        Product prod = new Product();
+        prod.setName(name);
+        prod.setDescription(description);
+        prod.setPrice(price);
+        prod.setImageUrl(imgUrl);
         return prod;
     }
     
@@ -43,19 +57,44 @@ public class ProductController extends HttpServlet {
             
             throws ServletException, IOException {
         
-        ProductDao prodDao = new  ProductDao();
-        //prodDao.excluir(productId);                                                                   
+        ProductDao prodDao = new  ProductDao();                                                                   
         prodDao.deleteByProductId(productId);                                                                   
-        res.sendRedirect(getServletContext().getInitParameter("root") + "produto/listar.jsp");
+        res.sendRedirect(getServletContext().getInitParameter("contextProject") + "produto/listar.jsp");
         
     }
     
+    private void updateProduct(int prod, HttpServletRequest req, HttpServletResponse res) throws IOException{
+        ProductDao prodDao = new  ProductDao(); 
+        Product product = new Product();
+        PrintWriter out = res.getWriter();
+        
+        out.println(prod);
+        product.setId(productId);
+        product.setName(req.getParameter("name"));
+        product.setDescription(req.getParameter("description"));
+        product.setPrice(Double.parseDouble(req.getParameter("price")));
+        product.setImageUrl(req.getParameter("imageUrl"));
+        prodDao.update(product);
+        res.sendRedirect(getServletContext().getInitParameter("contextProject") + "produto/listar.jsp");
+        
+        
+    }
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException {
       
         String action = req.getParameter("action");
         PrintWriter out = res.getWriter();
+        if(req.getParameter("id") != null){
+            
+            if ("".equals(req.getParameter("id"))) {
+                res.sendRedirect(getServletContext().getInitParameter("contextProject") + "produto/listar.jsp");
+                
+            }else{
+                productId = Integer.parseInt(req.getParameter("id")) ;
+            }
+        }
+        
         switch(action){
             case "register":
                 out.print("Entrou no case");
@@ -66,13 +105,14 @@ public class ProductController extends HttpServlet {
                 break;
                 
             case "delete":
-                int productId = Integer.parseInt(req.getParameter("id")) ;
                 deleteProduct(productId, req, res);
                 break;
                 
             case "update":
-                out.print("Alterando dados do produto");
+                out.print("Alterando dados do produto - "+req.getParameter("name"));
+                //productId = Integer.parseInt(req.getParameter("id")) ;
                 
+                updateProduct(productId, req, res);
                 
                 break;
                 
@@ -98,7 +138,7 @@ public class ProductController extends HttpServlet {
     public void createProductHandler(Product prod, HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException{
         if (prod == null){
             req.setAttribute("error", "Produto não cadastrado");
-            req.getRequestDispatcher("create-user.jsp").forward(req, res);
+            req.getRequestDispatcher("/ecommerce/produto/cadastrar.jsp").forward(req, res);
         } else {
             req.setAttribute("prod", prod);
            //req.getRequestDispatcher("product-page.jsp").forward(req, res);

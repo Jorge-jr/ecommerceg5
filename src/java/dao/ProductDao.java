@@ -38,41 +38,47 @@ public class ProductDao extends BasicDao {
         }
     }
 
-    public Product getByProductId(Long productId) {
-        String sql = "select * from Product where id = ?;";
-        Product product = null;
+    public Product getByProductId(int productId) {
+        String sql = "select * from Product where prod_id = ?;";
+        Product product = new Product();
         try {
             PreparedStatement stmt = this.con.prepareStatement(sql);
             stmt.setLong(1, productId);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                String name = rs.getString("name");
-                String description = rs.getString("description");
-                Double price = rs.getDouble("price");
-                String imageUrl = rs.getString("imageUrl");
-                product = new Product(name, description, price, imageUrl);
-                product.setId(rs.getInt("id"));
+                int prod_id = rs.getInt("prod_id");
+                String name = rs.getString("prod_name");
+                String description = rs.getString("prod_description");
+                double price = rs.getDouble("prod_price");
+                String imageUrl = rs.getString("prod_imageUrl");
+                
+                product.setName(name);
+                product.setDescription(description);
+                product.setPrice(price);
+                product.setImageUrl(imageUrl);
+                product.setId(prod_id);
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
         return product;
     }
+    
 
     public Product update(Product product) {
-        String sql = "update Product set "
-                + " name = ?, "
-                + " description = ?, "
-                + " price = ?, "
-                + " imageUrl = ? "
-                + " where id = ?; ";
+        String sql = "update product set "
+                + " prod_name = ?, "
+                + " prod_description = ?, "
+                + " prod_price = ?, "
+                + " prod_imageUrl = ? "
+                + " where prod_id = ?; ";
         try {
             PreparedStatement stmt = this.con.prepareStatement(sql);
             stmt.setString(1, product.getName());
             stmt.setString(2, product.getDescription());
             stmt.setDouble(3, product.getPrice());
             stmt.setString(4, product.getImageUrl());
-            stmt.setLong(5, product.getId());
+            stmt.setInt(5, product.getId());
             int executeUpdate = stmt.executeUpdate();
             if (executeUpdate == 1) {
                 return product;
@@ -113,9 +119,13 @@ public class ProductDao extends BasicDao {
                 String description = rs.getString("prod_description");
                 double price = rs.getDouble("prod_price");
                 String imageUrl = rs.getString("prod_imageUrl");
-                Product prod = new Product(name, description, price, imageUrl);
-                prod.setId(prod_id);
-                list.add(prod);
+                Product product = new Product();
+                product.setName(name);
+                product.setDescription(description);
+                product.setPrice(price);
+                product.setImageUrl(imageUrl);
+                product.setId(prod_id);
+                list.add(product);
             }
         } catch (Exception erro) {
              throw new RuntimeException("Erro para listar os produtos: "+ erro.getMessage());
