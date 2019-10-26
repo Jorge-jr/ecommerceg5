@@ -132,6 +132,32 @@ public class ProductDao extends BasicDao {
         }
         return list;
     }
+
+    public ArrayList<Product> listarTodos(int offset){
+        String sql = "SELECT * FROM product LIMIT 5 OFFSET" + offset;
+        try {
+            Statement st = this.con.createStatement();
+            
+            ResultSet rs = st.executeQuery(sql);
+            while (rs.next()) {
+                int prod_id = rs.getInt("prod_id");
+                String name = rs.getString("prod_name");
+                String description = rs.getString("prod_description");
+                double price = rs.getDouble("prod_price");
+                String imageUrl = rs.getString("prod_imageUrl");
+                Product product = new Product();
+                product.setName(name);
+                product.setDescription(description);
+                product.setPrice(price);
+                product.setImageUrl(imageUrl);
+                product.setId(prod_id);
+                list.add(product);
+            }
+        } catch (Exception erro) {
+             throw new RuntimeException("Erro para listar os produtos: "+ erro.getMessage());
+        }
+        return list;
+    }
     
     public int amountOfProducts(){
         String sql = "SELECT COUNT(prod_id) FROM product";
