@@ -56,7 +56,7 @@
                        <div class="card"  title="${produto.description}" style="width: 20rem;">
                             <div class="card-body">
 
-                              <img class="produto" src="${initParam.imageFolder}produto${numberItem.count}.jpg" />
+                              <img class="produto" src=${produto.imageUrl} />
                               <h6 class="card-title">${produto.name}</h6>
                               <h6 class="card-subtitle mb-2 text-muted">${produto.description}</h6>
                               <p class="card-text font-weight-bold">R$${produto.price}</p>
@@ -67,22 +67,18 @@
 
                     </c:forEach>
                 </div>
-
             </div>
-
-        </section>
-             ${pageContext.request.contextPath}
-            <p>Pagina: ${pagina == null ? "null" : pagina}</p>
             <div class="index_box">
                 <div class="vcr">
                     <a href="Pagina?method=get&pagina=1"><div class="vcr_button"><i class="fas fa-angle-double-left"></i></div></a>
                     <a href=${"Pagina?method=get&pagina="}${pagina == 1 ? 1 : pagina-1}><div class="vcr_button"><i class="fas fa-angle-left"></i></div></a>
-                    <input type="text" size="1" name="pagina" value=${pagina}> ${pagina*5-4} a ${pagina==qtdeDePaginas?tamanhoTotal:pagina*5} de ${tamanhoTotal} <%-- https://stackoverflow.com/questions/20998541/get-the-value-of-input-text-when-enter-key-pressed --%>
+                    <input type="text" size="1" name="pagina" value=${pagina}> <%-- https://stackoverflow.com/questions/20998541/get-the-value-of-input-text-when-enter-key-pressed --%>
                     <a href=${pagina == qtdeDePaginas ? "Pagina?method=get&pagina=" : "Pagina?method=get&pagina="}${pagina == qtdeDePaginas ? qtdeDePaginas : pagina+1}><div class="vcr_button"><i class="fas fa-angle-right"></i></div></a>
                     <a href=${"Pagina?method=get&pagina="}${qtdeDePaginas}><div class="vcr_button"><i class="fas fa-angle-double-right"></i></div></a>
-                   </div>
+                </div>
+                <div>exibindo de ${pagina*5-4} a ${pagina==qtdeDePaginas?tamanhoTotal:pagina*5} de ${tamanhoTotal} produtos</div>
             </div>
-
+        </section>
     </main>
 </body>
 

@@ -134,7 +134,7 @@ public class ProductDao extends BasicDao {
     }
 
     public ArrayList<Product> listarTodos(int offset){
-        String sql = "SELECT * FROM product LIMIT 5 OFFSET" + offset;
+        String sql = "SELECT * FROM product LIMIT 5 OFFSET " + offset + ";";
         try {
             Statement st = this.con.createStatement();
             
