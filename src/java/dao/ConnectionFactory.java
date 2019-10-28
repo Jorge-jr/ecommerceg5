@@ -12,7 +12,7 @@ public class ConnectionFactory {
             } catch (ClassNotFoundException e) {
                 System.out.println("Driver não encontrado!"+e);
             }
-            return DriverManager.getConnection("jdbc:mysql://localhost/ecommerceg5", "root", "");
+            return DriverManager.getConnection("jdbc:mysql://localhost:3306/devWeb-Trabalho?user='root'&password='2723@Kza&useSSL=false&allowPublicKeyRetrieval=true", "root", "2723@Kza");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

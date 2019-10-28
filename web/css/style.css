@@ -211,4 +211,20 @@ and open the template in the editor.
 		}
 	}
 
-	
+.index_box{
+    text-align: center;
+    background-color: blue;
+    margin: auto;
+    background-color: white;
+}
+
+.index_box a{
+    text-align: center;
+    text-decoration: none;
+    color: black; 
+
+}
+
+.vcr_button{
+    display: inline-block;
+}
